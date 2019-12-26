@@ -3,7 +3,10 @@ import * as logger from 'koa-logger';
 import * as cors from 'koa2-cors';
 import * as koaBodyparser from 'koa-bodyparser'
 import * as mongoDB from './mongoDB';
-import router from './routers';
+import "reflect-metadata";
+import { useKoaServer } from "routing-controllers";
+import { Controllers } from './controller';
+// import router from './routers';
 import config from './config';
 // 创建app
 const app = new Koa();
@@ -22,9 +25,16 @@ app.use(
 );
 app.use(logger())
   .use(koaBodyparser())
-  .use(router.routes())
-  .use(router.allowedMethods());
-// 开启serve
+  // .use(router.routes())
+  // .use(router.allowedMethods());
+
+useKoaServer(app, {
+  classTransformer: false,
+  routePrefix: "/api",
+  controllers: [...Controllers]
+})
+// // 开启serve
 app.listen(config.server.port);
+
 console.log(`Server running on port ${config.server.port}`);
 

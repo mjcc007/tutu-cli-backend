@@ -60,7 +60,7 @@ LibSchema.pre('findOneAndUpdate', function (next) {
   this.findOneAndUpdate({}, { meta: { updatedAt: Date.now() }});
   next();
 })
-const Lib = DB.model<LibDocument>('Project', LibSchema);
+const Lib = DB.model<LibDocument>('Lib', LibSchema);
 export default Lib;
 
 

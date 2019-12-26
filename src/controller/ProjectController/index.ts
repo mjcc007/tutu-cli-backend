@@ -2,12 +2,16 @@ import { Context } from 'koa'
 import DBService from '../../service';
 import { ResultVO } from '../../VO';
 import { IProjectInfo, IQuery } from 'src/service/ProjectService';
+import {JsonController, Param, Body, Get, Post, Put, Delete} from "routing-controllers";
+
+@JsonController()
 export default class ProjectController {
   /**
    * 创建一个新项目
    * @param project
    */
-  public static async addProject(project:IProjectInfo) {
+  @Post("/project/create")
+  public async addProject(@Body() project:IProjectInfo) {
     if (project.name === "" || project.name === undefined) {
       return ResultVO.buildError(-1, 'project name can not null!');
     }
@@ -27,21 +31,27 @@ export default class ProjectController {
    * 根据条件查询存在的项目
    * @param query
    */
-  public static async findProjects(query:IQuery) {
-    if (query.pageIndex === null || query.pageSize === null) {
-      return ResultVO.buildError(-1, 'query params can not null!');
-    }
-    const result = await DBService.ProjectService.findAll(query);
-    if (result) {
-      return ResultVO.buildSuccess(result);
-    } else {
-      return ResultVO.buildError();
+  @Post("/project/find")
+  public async findProjects(@Body() query:IQuery) {
+    try {
+      if (query.pageIndex === null || query.pageSize === null) {
+        return ResultVO.buildError(-1, 'query params can not null!');
+      }
+      const result = await DBService.ProjectService.findAll(query);
+      if (result) {
+        return ResultVO.buildSuccess(result);
+      } else {
+        return ResultVO.buildError();
+      }
+    } catch(err) {
+      console.log(err);
     }
   }
   /**
    * delete the project by id
    */
-  public static async delProjectById(id:string) {
+  @Post("/project/del/:id")
+  public async delProjectById(@Param("id") id:string) {
     if (id === "" || id === null) {
       return ResultVO.buildError(-1, 'the id can not null!');
     }
@@ -51,5 +61,12 @@ export default class ProjectController {
     } else {
       return ResultVO.buildError(-1, 'delete failed!');
     }
+  }
+
+  @Post("/project/test")
+  public getAll() {
+    return {
+      name: "test"
+    };
   }
 }

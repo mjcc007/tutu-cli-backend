@@ -51,14 +51,19 @@ export default class ProjectService {
     }
     const skip = Number.parseInt(pageIndex) * Number.parseInt(pageSize) -
       Number.parseInt(pageSize)
-    const projects = await Project.find(data)
-      // .sort({meta.createdAt: -1})
-      .limit(Number.parseInt(pageSize))
-      .skip(skip);
-    const total = await Project.countDocuments({})
-    return {
-      total,
-      projects
+    try {
+      const projects = await Project.find(data)
+        .sort({'meta.createdAt': -1})
+        .limit(Number.parseInt(pageSize))
+        .skip(skip);
+      console.log(projects[0]);
+      const total = await Project.countDocuments({})
+      return {
+        total,
+        projects
+      }
+    } catch(err) {
+      console.log(err)
     }
   }
 
