@@ -62,9 +62,18 @@ export default class ProjectService {
     }
   }
 
-  // public static async findById(id:string) {
-
-  // }
+  public static async delById(id:string) {
+    return new Promise((resolve, reject) => {
+      Project.deleteOne({_id:id}, (err:any) => {
+        if (err) {
+          console.log(err);
+          reject(false);
+        } else {
+          resolve(id)
+        }
+      })
+    })
+  }
 }
 
 

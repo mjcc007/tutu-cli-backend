@@ -1,5 +1,20 @@
 import {DB, Schema} from '../mongoDB';
-
+export type LibDocument = Document & {
+  // lib 名称
+  name: String,
+  // 描述
+  description: String,
+  // 标签
+  tags: [String],
+  // 仓库地址
+  reposPath: String,
+  // 发布地址
+  publishAddr: String,
+  // api doc Path
+  apiDocPath: String,
+  // 配置
+  configPath: String
+}
 const LibSchema = new Schema({
   // lib 名称
   name: String,

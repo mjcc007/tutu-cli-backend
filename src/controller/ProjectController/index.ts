@@ -38,4 +38,18 @@ export default class ProjectController {
       return ResultVO.buildError();
     }
   }
+  /**
+   * delete the project by id
+   */
+  public static async delProjectById(id:string) {
+    if (id === "" || id === null) {
+      return ResultVO.buildError(-1, 'the id can not null!');
+    }
+    const result = await DBService.ProjectService.delById(id);
+    if (result) {
+      return ResultVO.buildSuccess(result);
+    } else {
+      return ResultVO.buildError(-1, 'delete failed!');
+    }
+  }
 }
