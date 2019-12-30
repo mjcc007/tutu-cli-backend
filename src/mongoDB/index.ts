@@ -13,7 +13,7 @@ export const connect = () => {
       useUnifiedTopology: true,
     })
   }
-
+  DB.set('useCreateIndex', true)
   doConnect();
 
   // 连接错误

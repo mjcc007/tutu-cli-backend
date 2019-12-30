@@ -6,7 +6,7 @@ const SALT_WORK_FACTOR = 10
 
 export type UserDocument = Document & {
   username: string,
-  email:  string,
+  email?: string,
   password: string,
   meta: {
     // 创建日期
@@ -22,11 +22,9 @@ const userScheme = new Schema({
     type: String,
   },
   email: {
-    unique: true,
     type: String
   },
   password: {
-    unique: true,
     type: String
   },
 
@@ -50,6 +48,7 @@ userScheme.pre('findOneAndUpdate', function (next) {
 })
 
 userScheme.pre('save', function(next) {
+  console.log('save.........................')
   // 判断当前密码是否更改
   if (!this.isModified('password')) return next();
   // 密码加密

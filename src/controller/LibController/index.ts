@@ -1,16 +1,16 @@
 
 import DBService from '../../service';
 import { ResultVO } from '../../VO';
-import { ILibInfo, IQuery } from 'src/service/LibService';
+import { ILibInfo, IQuery } from 'src/dao/LibMapper';
 import {JsonController, Param, Body, Get, Post, Put, Delete} from "routing-controllers";
 
-@JsonController()
+@JsonController("/lib")
 export default class LibController {
   /**
    * 创建一个新项目
    * @param lib
    */
-  @Post("/lib/create")
+  @Post("/create")
   public async addLib(@Body() lib:ILibInfo) {
     if (lib.name === "" || lib.name === undefined) {
       return ResultVO.buildError(-1, 'project name can not null!');
@@ -31,7 +31,7 @@ export default class LibController {
    * 根据条件查询存在的项目
    * @param query
    */
-  @Post("/lib/find")
+  @Post("/find")
   public async findLibs(@Body() query:IQuery) {
     if (query.pageIndex === null || query.pageSize === null) {
       return ResultVO.buildError(-1, 'query params can not null!');
@@ -43,15 +43,39 @@ export default class LibController {
       return ResultVO.buildError();
     }
   }
+
+  @Post("/optionlist")
+  public async cookOptions() {
+    const result = await DBService.LibService.findOptMapper();
+    if (result) {
+      return ResultVO.buildSuccess(result);
+    }
+    return ResultVO.buildError(-1, "db error");
+  }
+
+
   /**
    * delete the project by id
    */
-  @Post("/lib/del/:id")
+  @Post("/del/:id")
   public async delLibById(@Param("id") id:string) {
     if (id === "" || id === null) {
       return ResultVO.buildError(-1, 'the id can not null!');
     }
     const result = await DBService.LibService.delById(id);
+    if (result) {
+      return ResultVO.buildSuccess(result);
+    } else {
+      return ResultVO.buildError(-1, 'delete failed!');
+    }
+  }
+
+  @Post("/find/:id")
+  public async findLibById(@Param("id") id:string) {
+    if (id === "" || id === null) {
+      return ResultVO.buildError(-1, 'the id can not null!');
+    }
+    const result = await DBService.LibService.findById(id);
     if (result) {
       return ResultVO.buildSuccess(result);
     } else {

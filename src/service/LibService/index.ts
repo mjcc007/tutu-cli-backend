@@ -1,81 +1,60 @@
-import { Lib } from '../../models';
 
-export interface ILibInfo {
-  _id?: string,
-    // lib 名称
-  name: string,
-  // 描述
-  description: string,
-  // 标签
-  tags: [string],
-  // 仓库地址
-  reposPath: string,
-  // 发布地址
-  publishAddr: string,
-  // api doc Path
-  apiDocPath: string,
-  // 配置
-  configPath: string
-}
+/**
+ * @Description: lib服务
+ * @Author: chengcheng
+ * @Date: Create in 10:50 2019/12/27
+ * @Modified By:
+ */
 
-export interface IQuery {
-  pageIndex: string
-  pageSize: string
-  name?: string
-}
+import { ILibInfo, IQuery } from '../../dao/LibMapper';
+import { LibMapper } from '../../dao';
+import IOptionsVO from '../../VO/OptionsVO';
 export default class LibService {
   public static async createLib(libInfo:ILibInfo)  {
-    return new Promise((resolve, reject) => {
-      Lib.create(
-        {...libInfo},
-        (err: string, doc: object) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(doc)
-          }
-        }
-      );
-    });
+    return LibMapper.createLib(libInfo);
   }
 
   public static async isExistName(name:string) {
-    let count = await Lib.countDocuments({name: name})
-    return count > 0 ? true : false
+    return LibMapper.isExistName(name);
   }
 
 
   public static async findAll(query: IQuery) {
-    const { pageSize, pageIndex, name } = query;
-    let data:Object = {};
-    if (name) {
-      data = {name}
-    }
-    const skip = Number.parseInt(pageIndex) * Number.parseInt(pageSize) -
-      Number.parseInt(pageSize)
-    const libs = await Lib.find(data)
-      // .sort({meta.createdAt: -1})
-      .limit(Number.parseInt(pageSize))
-      .skip(skip);
-    const total = await Lib.countDocuments({})
-    return {
-      total,
-      libs
-    }
+    return LibMapper.findByQuery(query);
   }
 
   public static async delById(id:string) {
-    return new Promise((resolve, reject) => {
-      Lib.deleteOne({_id:id}, (err:any) => {
-        if (err) {
-          console.log(err);
-          reject(false);
-        } else {
-          resolve(id)
-        }
-      })
-    })
+    return LibMapper.delById(id);
   }
+
+  /**
+   * 返回libs的选项列表
+   * @returns Array<IOptionsVO>
+   */
+  public static async findOptMapper() {
+    const result = await LibMapper.findAll();
+    let options:Array<IOptionsVO> = [];
+    if (result) {
+      result.forEach((item) => {
+        let option = {
+          label: item.name.toString(),
+          value: item._id
+        }
+        options.push(option);
+      })
+    }
+    return options;
+  }
+
+
+  /**
+   * 根据id查找
+   */
+  public static async findById(id: string) {
+    let ret = LibMapper.findById(id);
+    return ret;
+  }
+
 }
 
 

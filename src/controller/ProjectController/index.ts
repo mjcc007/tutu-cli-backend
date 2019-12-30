@@ -1,16 +1,17 @@
 import { Context } from 'koa'
 import DBService from '../../service';
 import { ResultVO } from '../../VO';
-import { IProjectInfo, IQuery } from 'src/service/ProjectService';
+import { IProjectInfo, IQuery } from 'src/dao/ProjectMapper';
 import {JsonController, Param, Body, Get, Post, Put, Delete} from "routing-controllers";
 
-@JsonController()
+
+@JsonController("/project")
 export default class ProjectController {
   /**
    * 创建一个新项目
    * @param project
    */
-  @Post("/project/create")
+  @Post("/create")
   public async addProject(@Body() project:IProjectInfo) {
     if (project.name === "" || project.name === undefined) {
       return ResultVO.buildError(-1, 'project name can not null!');
@@ -21,17 +22,31 @@ export default class ProjectController {
     }
     const response = await DBService.ProjectService.createProject(project);
     if (response) {
-     return ResultVO.buildSuccess(response);
+      return ResultVO.buildSuccess(response);
     } else {
       return ResultVO.buildError();
     }
   }
 
   /**
+   *
+   * @param query 更新一个项目
+   */
+  @Post("/update")
+  public async updateProject(@Body() project:IProjectInfo) {
+    if (project._id === "" || project._id === undefined) {
+      return ResultVO.buildError(-1, 'project not exist!');
+    }
+    const response = await DBService.ProjectService.updateTheProject(project);
+    return response === false ? ResultVO.buildError() : ResultVO.buildSuccess(response);
+  }
+
+
+  /**
    * 根据条件查询存在的项目
    * @param query
    */
-  @Post("/project/find")
+  @Post("/find")
   public async findProjects(@Body() query:IQuery) {
     try {
       if (query.pageIndex === null || query.pageSize === null) {
@@ -50,7 +65,7 @@ export default class ProjectController {
   /**
    * delete the project by id
    */
-  @Post("/project/del/:id")
+  @Post("/del/:id")
   public async delProjectById(@Param("id") id:string) {
     if (id === "" || id === null) {
       return ResultVO.buildError(-1, 'the id can not null!');
@@ -63,7 +78,7 @@ export default class ProjectController {
     }
   }
 
-  @Post("/project/test")
+  @Post("/test")
   public getAll() {
     return {
       name: "test"

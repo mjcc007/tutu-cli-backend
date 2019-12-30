@@ -26,7 +26,7 @@ export class ResultVO {
   }
 
   public static buildSuccess(data:any = null, msg:string = 'success'):IResultVO {
-    return new ResultVO(0, data, msg, true)._result;
+    return new ResultVO(20000, data, msg, true)._result;
   }
   public static buildError(code:number = -1, msg:string = 'faild', data:any = null):IResultVO {
     return new ResultVO(code, data, msg, false)._result;

@@ -8,12 +8,14 @@ export type ProjectDocument = Document & {
   description: String,
   // 项目标签
   tags: [String],
+  // 发布状态
+  status: Number,
   // 项目生成路径
   buildPath: String,
   // 项目发布地址
   publishAddr: String,
   // 项目需要发布的lib列表
-  relyLibIdS: [Number],
+  relyLibIdS: [String],
 
   meta: {
      // 创建日期
@@ -33,12 +35,17 @@ const ProjectSchema = new Schema({
   description: String,
   // 项目标签
   tags: [String],
+  // 发布状态
+  status: {
+    type: Number,
+    default: 0
+  },
   // 项目生成路径
   buildPath: String,
   // 项目发布地址
   publishAddr: String,
   // 项目需要发布的lib列表
-  relyLibIdS: [Number],
+  relyLibIdS: [String],
 
   meta: {
      // 创建日期
