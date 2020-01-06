@@ -21,7 +21,7 @@ export default class LibController {
     }
     const response = await DBService.LibService.createLib(lib);
     if (response) {
-     return ResultVO.buildSuccess(response);
+      return ResultVO.buildSuccess(response);
     } else {
       return ResultVO.buildError();
     }
@@ -81,5 +81,19 @@ export default class LibController {
     } else {
       return ResultVO.buildError(-1, 'delete failed!');
     }
+  }
+
+
+    /**
+   *
+   * @param query 更新一个项目
+   */
+  @Post("/update")
+  public async updateProject(@Body() lib:ILibInfo) {
+    if (lib._id === "" || lib._id === undefined) {
+      return ResultVO.buildError(-1, 'project not exist!');
+    }
+    const response = await DBService.LibService.updateTheLib(lib);
+    return response === false ? ResultVO.buildError() : ResultVO.buildSuccess(response);
   }
 }

@@ -8,6 +8,8 @@ export interface IProjectInfo {
   description?: string,
   // 项目标签
   tags?: Array<string>,
+  // 发布状态
+  status: Number,
   // 项目生成路径
   buildPath?: string,
   // 项目发布地址
@@ -25,7 +27,7 @@ export default class ProjectMapper {
   public static async createProject(project:IProjectInfo)  {
     return new Promise((resolve, reject) => {
       Project.create(
-        {...project},
+        {...project, publishAddr: ""},
         (err: string, doc: object) => {
           if (err) {
             reject(err);
@@ -95,6 +97,18 @@ export default class ProjectMapper {
   public static async findById(id: string) {
     const lib = await Project.findOne({_id: id})
     return lib
+  }
+
+  public static async updateStatus(id:string, status:number) {
+    if (id === "" || id === undefined) {
+      return false
+    }
+    try {
+      let result = await Project.updateOne({_id: id}, {status: status})
+      return result;
+    } catch(err) {
+      console.log(err)
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-import { Lib } from '../../models';
+import { Lib, Config } from '../../models';
 import { LibDocument } from '../../models/Lib';
 
 export interface ILibInfo {
@@ -8,7 +8,7 @@ export interface ILibInfo {
   // 描述
   description: string,
   // 标签
-  tags: [string],
+  tags: Array<string>,
   // 仓库地址
   reposPath: string,
   // 发布地址
@@ -31,11 +31,15 @@ export default class LibMapper {
    */
   public static async createLib(libInfo:ILibInfo)  {
     return new Promise((resolve, reject) => {
+      let data = {...libInfo}
+      data.configPath = ""
+      data.apiDocPath = ""
       Lib.create(
-        {...libInfo},
+        {...data},
         (err: string, doc: object) => {
           if (err) {
-            reject(err);
+            console.log(err)
+            reject(false);
           } else {
             resolve(doc)
           }
@@ -91,6 +95,21 @@ export default class LibMapper {
     const lib = await Lib.findOne({_id: id})
     return lib
   }
+
+  public static async update(libInfo:ILibInfo) {
+    if (libInfo._id === "" ||  libInfo._id === undefined) {
+      return false
+    }
+    try {
+      let result = await Lib.updateOne({_id: libInfo._id}, {...libInfo})
+      return result;
+    } catch(err) {
+      console.log(err)
+      return false
+    }
+  }
+
+
 }
 
 

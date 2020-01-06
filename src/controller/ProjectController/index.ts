@@ -78,6 +78,24 @@ export default class ProjectController {
     }
   }
 
+  @Post("/publish/:id")
+  public async publish(@Param("id") id:string) {
+    if (id === "" || id === null) {
+      return ResultVO.buildError(-1, 'the id can not null!');
+    }
+    const result = await DBService.ProjectService.publish(id);
+    return result === false ? ResultVO.buildError() : ResultVO.buildSuccess(result);
+  }
+
+  @Post("/status/:id")
+  public async getStatus(@Param("id") id:string) {
+    if (id === "" || id === null) {
+      return ResultVO.buildError(-1, 'the id can not null!');
+    }
+    const result = await DBService.ProjectService.getStatus(id);
+    return result === false ? ResultVO.buildError() : ResultVO.buildSuccess(result);
+  }
+
   @Post("/test")
   public getAll() {
     return {

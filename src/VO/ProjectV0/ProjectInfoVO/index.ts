@@ -7,6 +7,8 @@ export default interface IProjectInfoVO {
   description: String,
   // 项目标签
   tags: [String],
+  // 发布状态
+  status: Number,
   // 项目发布地址
   publishAddr: String,
   // 项目需要发布的lib列表
